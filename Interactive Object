@@ -1,0 +1,236 @@
+import java.io.File;
+import java.util.NoSuchElementException;
+import processing.core.PImage;
+
+/**
+ * A class that provides interactivity with objects for the Treasure Hunt game
+ * 
+ * @author 
+ *
+ */
+public class InteractiveObject implements Clickable {
+  //reference to the PApplet where this object will be drawn
+  protected static TreasureHunt processing;
+  private final String NAME; // name of this interactive object
+  protected PImage image; // reference to the image of this object
+  private int x; // x-position of this interactive object in the screen
+  private int y; // y-position of this interactive object in the screen
+  //Note that the position (x,y) of the interactive object is the position
+  //of the upper-left corner of its image (and NOT the center of the image).
+  private boolean isActive; // tells whether or not this object is active
+  private boolean wasClicked; // tells whether this object was already clicked
+  private String message; // message to be displayed when this object is clicked
+  private InteractiveObject nextClue; // Object to be activated when this object is
+  //clicked the first time, if any
+
+  /**
+   * Creates a new interactive object with no next clue (nextClue == null) and sets its image, name,
+   * x and y positions, its message, and activation status. When created, an interactive object must
+   * be active, and not clicked yet. [Details on how to set the image of this interactive object are
+   * provided in the write-up.]
+   * 
+   * @param name    name to be assigned to this interactive object. We assume that name is VALID 
+   *                (not null and not equal to an empty string)
+   * @param x       x-position to be assigned to this interactive object
+   * @param y       y-position to be assigned to this interactive object
+   * @param message message to be displayed on the console each time this interactive object is 
+   *                clicked. We assume that message is VALID (not null and not equal to an empty 
+   *                string)
+   */
+  public InteractiveObject(String name, int x, int y, String message) {
+    NAME = name;
+    image = processing.loadImage("images" + File.separator + name + ".png");
+    this.x = x;
+    this.y = y;
+    isActive = true;
+    wasClicked = false;
+    this.message = message;
+    nextClue = null;
+  }
+
+  /**
+   * Creates a new interactive object with a next clue (nextClue != null) to be activated when this 
+   * interactive object is clicked for the first time. This constructor sets the image of the newly 
+   * created interactive object, its name, x and y positions, its message, and activation status. 
+   * When created, an interactive object must be active, and not clicked yet. Also, this constructor
+   * deactivates the next clue of this interactive object.
+   * 
+   * @param name     name to be assigned to this interactive object. We assume that name is VALID 
+   *                 (not null and not equal to an empty string)
+   * @param x        x-position to be assigned to this interactive object
+   * @param y        y-position to be assigned to this interactive object
+   * @param message  message to be displayed on the console each time this interactive object is 
+   *                 clicked. We assume that message is VALID (not null and not equal to an empty 
+   *                 string)
+   * @param nextClue a reference to a non-null InteractiveObject which represents the next clue 
+   *                 associated to this interactive object.
+   */
+  public InteractiveObject(String name, int x, int y, String message, InteractiveObject nextClue) {
+    this(name, x, y, message);
+    this.nextClue = nextClue;
+    nextClue.deactivate();
+  }
+
+  /**
+   * Sets the PApplet object of the treasure hunt application where all the interactive objects will
+   * be drawn. Note that a graphic application has ONLY one display window of type PApplet where all
+   * graphic objects interact. For this game, the TreasureHunt object serves as the PApplet.
+   * 
+   * @param processing the TreasureHunt object all the InteractiveObject objects will be drawn in
+   */
+  public static void setProcessing​(TreasureHunt processing) {
+    InteractiveObject.processing = processing;
+  }
+
+  /**
+   * Gets the X-position of this InteractiveObject
+   * 
+   * @return the X position of this InteractiveObject
+   */
+  public int getX() {
+    return x;
+  }
+
+  /**
+   * Gets the Y-position of this InteractiveObject
+   * 
+   * @return the Y position of this InteractiveObject
+   */
+  public int getY() {
+    return y;
+  }
+
+  /**
+   * Moves the InteractiveObject by the amounts dx (on the x-axis) and dy (on the y-axis)
+   * 
+   * @param dx The amount the InteractiveObject will move along the x-axis
+   * @param dy The amount the InteractiveObject will move along the y-axis
+   */
+  public void move​(int dx, int dy) {
+    x += dx;
+    y += dy;
+  }
+
+  /**
+   * Determines whether this InteractiveObject has the same NAME variable as the name specified.  
+   * Comparisons ARE case-sensitive.
+   * 
+   * @param name The String this object's NAME variable is compared to
+   * @return true if the strings are equal, false otherwise
+   */
+  public boolean hasName​(String name) {
+    if (name != null && name.trim().equals(NAME.trim())) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Checks whether this InteractiveObject is active or not.
+   * 
+   * @return true if this InteractiveObject is active, false otherwise
+   */
+  public boolean isActive() {
+    return isActive;
+  }
+
+  /**
+   * Activates this InteractiveObject.
+   */
+  public void activate() {
+    isActive = true;
+  }
+
+  /**
+   * Deactivates this InteractiveObject.
+   */
+  public void deactivate() {
+    isActive = false;
+  }
+
+  /**
+   * Gets the message of this InteractiveObject.
+   * 
+   * @return the message variable of this InteractiveObject
+   */
+  public String message() {
+    return message;
+  }
+
+  /**
+   * Sets the next clue for this InteractiveObject.  
+   * 
+   * @param nextClue The next clue that will gets assigned to this InteractiveObject
+   */
+  public void setNextClue​(InteractiveObject nextClue) {
+    this.nextClue = nextClue;
+  }
+
+  /**
+   * Activates the next clue of this InteractiveObject, if it exists.
+   */
+  protected void activateNextClue() {
+    if (nextClue == null) {
+      throw new NoSuchElementException("nextClue for " + NAME + " is null.");
+    }
+
+    nextClue.activate();
+    processing.add(nextClue);
+  }
+
+  @Override
+  /**
+   * Draws this interactive object (meaning drawing its image) to the display window at positions x 
+   * and y.
+   */
+  public void draw() {
+    if (this.isActive()) {
+      processing.image(image, x, y);
+    }
+  }
+
+  @Override
+  /**
+   * This method operates each time the mouse is pressed. This interactive object responds to the 
+   * mouse clicks as follows. If the InteractiveObject is clicked (meaning the mouse is over it) two
+   * operations will be performed as follows: (1) The message of this interactive object must be 
+   * displayed to the console. (2) If this interactive object has a next clue and was not clicked, 
+   * its next clue will be activated and its wasClicked setting will be updated.
+   */
+  public void mousePressed() {
+    if (this.isActive() && this.isMouseOver()) {
+      System.out.println(message); //(1)
+      if (!wasClicked) {           //(2)
+        wasClicked = true;        
+        if (nextClue != null) {
+          this.activateNextClue();
+        }
+      }
+    }
+  }
+
+  @Override
+  /**
+   * No actions when the mouse is released.
+   */
+  public void mouseReleased() {
+
+  }
+
+
+  @Override
+  /**
+   * Checks whether the mouse is over the image of this interactive object
+   * 
+   * @return true if the mouse cursor is over this object, false otherwise 
+   */
+  public boolean isMouseOver() {
+    if (processing.mouseX >= x && processing.mouseX <= x + image.width && processing.mouseY >= y 
+        && processing.mouseY <= y + image.height) {
+      return true;
+    }
+
+    return false;
+  }
+
+}
