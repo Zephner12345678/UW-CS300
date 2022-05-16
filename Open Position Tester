@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
  * This class implements unit test methods to check the correctness of Application, 
  * ApplicationIterator, ApplicationQueue and OpenPosition classes in the assignment.
  *
- *@author Blake Baranowski and Brooke Foye
+ *@author
  */
 public class OpenPositionTester {
 
