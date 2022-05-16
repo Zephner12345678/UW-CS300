@@ -1,0 +1,21 @@
+public class RestartGameButton extends Button {
+  
+  /**
+   * Creates a RestartGameButton at the specified coordinates with the label "Restart Game".
+   * 
+   * @param x The x-position of the RestartGameButton
+   * @param y The y-position of the RestartGameButton
+   */
+  public RestartGameButton(int x, int y) {
+    super("Restart Game", x, y);
+  }
+  
+  /**
+   * Resets the Treasure Hunt game when the mouse presses the button.
+   */
+  public void mousePressed() {
+    if (this.isMouseOver() && processing instanceof TreasureHunt) {
+      ((TreasureHunt) processing).initGame();
+    }
+  }
+}
