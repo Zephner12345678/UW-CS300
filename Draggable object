@@ -1,0 +1,90 @@
+public class DraggableObject extends InteractiveObject {
+  private boolean isDragging;
+  private int oldMouseX;
+  private int oldMouseY;
+
+  /**
+   * Creates a new Draggable object with a given name, x and y position, and "Drag Me!" as a default
+   *  message. When created a new draggable object is NOT being dragged.
+   *  
+   * @param name the name of the new DraggableObject
+   * @param x    the x position of the new DraggableObject
+   * @param y    the y-position of the new DraggableObject
+   */
+  public DraggableObject(String name, int x, int y) {
+    this(name, x, y, "Drag Me!");
+  }
+
+  /**
+   * Creates a new Draggable object with a given name, x and y position, and "Drag Me!" as a default
+   *  message. When created a new draggable object is NOT being dragged.
+   *  
+   * @param name    the name of the new DraggableObject
+   * @param x       the x position of the new DraggableObject
+   * @param y       the y-position of the new DraggableObject
+   * @param message the message displayed by the newDraggableObject
+   */
+  public DraggableObject(String name, int x, int y, String message) {
+    super(name, x, y, message);
+    isDragging = false;
+  }
+
+  /**
+   * Checks whether this DraggableObject is being dragged.
+   * 
+   * @return true if this object is being dragged, false otherwise
+   */
+  public boolean isDragging() {
+    return isDragging;
+  }
+
+  /**
+   * Starts dragging this DraggableObject and updates the oldMouseX and oldMouseY positions to the 
+   * current position of the mouse.
+   */
+  public void startDragging() {
+    isDragging = true;
+    oldMouseX = processing.mouseX;
+    oldMouseY = processing.mouseY;
+  }
+
+  /**
+   * Stops dragging this DraggableObject.  
+   */
+  public void stopDragging() {
+    isDragging = false;
+  }
+
+  @Override
+  /**
+   * Draws this DraggableObject to the display window. If this object is being dragged, this method
+   * sets its position to follow the mouse moves. Then, it draws this object's image to the its 
+   * current position.
+   */
+  public void draw() {
+    if (this.isDragging) {
+      this.move​(processing.mouseX - oldMouseX, processing.mouseY - oldMouseY);
+      oldMouseX = processing.mouseX;
+      oldMouseY = processing.mouseY;
+    }
+    super.draw();
+  }
+
+  @Override
+  /**
+   * Starts dragging this object when it is clicked (meaning when the mouse is over it).
+   */
+  public void mousePressed() {
+    if (this.isMouseOver()) {
+      this.startDragging();
+    }
+  }
+
+  @Override
+  /**
+   * Stops dragging this object if the mouse is released.
+   */
+  public void mouseReleased() {
+    this.stopDragging();
+  }
+}
