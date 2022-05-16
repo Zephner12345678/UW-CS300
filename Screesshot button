@@ -1,0 +1,30 @@
+/**
+ * A button to implement taking a screenshot of the Treasure Hunt game, thus acting as a crude save
+ * feature or proof that one has one the game.
+ * 
+ * @author 
+ *
+ */
+public class ScreenshotButton extends Button {
+
+  /**
+   * Creates a new ScreenshotButton at the specified x/y coordinates with the label "Take a 
+   * Screenshot".
+   * 
+   * @param x the x-position of the ScreenshotButton
+   * @param y the y-position of the ScreenshotButton
+   */
+  public ScreenshotButton(int x, int y) {
+    super("Take a screenshot", x, y);
+  }
+
+  /**
+   * Takes a screenshot using PApplet.save and saves it in the current working directory as 
+   * screenshot.png.
+   */
+  public void mousePressed() {
+    if (this.isMouseOver()) {
+      processing.save("screenshot.png");
+    }
+  }
+}
